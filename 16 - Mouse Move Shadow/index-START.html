@@ -35,6 +35,40 @@
   </style>
 
 <script>
+  const hero = document.querySelector('.hero');
+  const text = hero.querySelector('h1');
+  // const walk = 100; // 100px
+  const walk = 500;
+
+  function shadow(e) {
+    // console.log(e);
+    /* 以下二行を一行で書ける
+    const width = hero.offsetWidth;
+    const height = hero.offsetHeight;
+    */
+    const { offsetWidth: width, offsetHeight: height } = hero; // 一行！
+    let { offsetX: x, offsetY: y } = e; // heroのoffsetX,Y // カーソルの位置を取得する
+    // console.log(x, y);
+    // console.log(this, e.target); // thisはhero, e.targetはh1
+    if(this !== e.target) {
+      x = x + e.target.offsetLeft; // heroのoffsetXとh1のoffsetLeftを足す
+      y = y + e.target.offsetTop;
+    }
+    // console.log(x, y);
+    const xWalk = Math.round((x / width * walk) - (walk / 2)); // 50いったら-50のように相殺
+    const yWalk = Math.round((y / height * walk) - (walk / 2)); // Math.round(num)は四捨五入
+    // console.log(xWalk, yWalk);
+
+    // text.style.textShadow = `${xWalk}px ${yWalk}px 0 red`;
+    text.style.textShadow = `
+      ${xWalk}px ${yWalk}px 0 rgba(255,0,255,0.7),
+      ${xWalk * -1}px ${yWalk}px 0 rgba(0,255,255,0.7),
+      ${yWalk}px ${xWalk * -1}px 0 rgba(0,255,0,0.7),
+      ${yWalk * -1}px ${xWalk}px 0 rgba(0,0,255,0.7)
+    `;
+  }
+
+  hero.addEventListener('mousemove', shadow);
 </script>
 </body>
 </html>
