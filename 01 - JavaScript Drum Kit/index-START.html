@@ -58,6 +58,53 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
 <script>
+/*
+  // window.addEventListener("keydown", function(e) {
+  //   console.log(e.keyCode); // .keycodeでパソコンのキーの番号がわかる
+  // });
+
+  window.addEventListener("keydown", function(e) {
+    const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+    const key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
+    // console.log(audio);
+    if (!audio) return; // 関数が実行されないようにする
+    audio.currentTime = 0; // 最初に巻き戻される時間。キーを連続で打ってもその都度サウンドが鳴るようにする
+    audio.play();
+    // console.log(key);
+    key.classList.add("playing"); // clssを追加している。cssで追加したクラス(変化後の動き)を指定してる
+    // classList.remove("")はクラスを削除、.containは含まれているか確認、.toggleは含まれていれば削除含まれていなければ追加
+    
+  });
+
+  function removeTransition(e) {
+  //  console.log(e); // この行だけしてeが何を呼び出すか見る。なんの名前とバリューを持ったオブジェクトか
+    if (e.propertyName !== "transform") return; // transformプロパティは"playing""クラス(上記でkeydownで追加したクラス)にしかないから
+    // console.log(e.propertyName);
+    // console.log(this); // thisは呼び出されたものが何であれそれと等しい。なので、この場合は下のkeys.forEach(...)のkey.addEvent..で呼び出されているから、keyとthisが等しい
+    this.classList.remove("playing");
+  }
+  const keys = document.querySelectorAll(".key"); // array.forEach(関数)は与えられた関数を配列の各要素に対して一度ずつ呼び出す
+  keys.forEach((key) => key.addEventListener("transitionend", removeTransition)); // tranditionendイベントはtransitionイベントが完了したときに発生
+  以下で見た目を整えると……*/
+
+  function playSound(e) {
+    const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+    const key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
+    if (!audio) return; 
+    audio.currentTime = 0; 
+    audio.play();
+    key.classList.add("playing"); 
+  }
+
+  function removeTransition(e) {
+    if (e.propertyName !== "transform") return; 
+    this.classList.remove("playing");
+  }
+
+  const keys = document.querySelectorAll(".key");
+  keys.forEach((key) => key.addEventListener("transitionend", removeTransition)); 
+  
+  window.addEventListener("keydown", playSound);
 
 </script>
 
