@@ -28,11 +28,61 @@
 <script>
   const addItems = document.querySelector('.add-items');
   const itemsList = document.querySelector('.plates');
-  const items = [];
+  const items = JSON.parse(localStorage.getItem('items')) || []; // localstorageから要素を取得するか、空の配列を返すか // JSON.parse()は文字列によって記述されているJavaScriptの値やオブジェクトを構築する
+
+  function addItem(e) {
+    e.preventDefault();
+    // console.log('Hello');
+    const text = (this.querySelector('[name=item]')).value; // this(つまりaddItems)はフォームタグ全体を指しているから、[name=item]と指定する
+    const item = {
+      text: text, // 単にtext, と省略しても書ける
+      done: false
+    };
+    // console.log(item);
+    items.push(item);
+    populateList(items, itemsList);
+    localStorage.setItem('items', JSON.stringify(items)); // Local storageに保存することでリロードしてもアイテムのテキストが残るようにする。keyとvalue
+    // .setItem('items', items)のままでは、valueは文字列として認識されるから、items.toString()が[Object, Object]になってしまってる状態だからだめ。
+    this.reset(); // フォームをリセットする
+  }
+
+  function populateList(plates = [], platesList) {
+    platesList.innerHTML = plates.map((plate, i) => {
+      return `
+      <li> 
+        <input type="checkbox" data-index=${i} id="item${i}" ${plate.done ? 'checked' : ''} />
+        <label for="item${i}">${plate.text}</label>
+      </li>
+      `;
+    }).join(''); // .mapは配列を返すから文字列に変換する // nullは文字列に表示されるから''(blank)を入力する
+  }
+
+  // Chromeのディベロッパーツールのapplicationを開いてstorage>Local Storage>fileを見ると何がstorageされてるかわかる
+
+  function toggleDone(e) {
+    if (!e.target.matches('input')) return; // inputじゃなければskip
+    // console.log(e.target);
+    const el = e.target;
+    // console.log(el.dataset.index);
+    const index = el.dataset.index;
+    items[index].done = !items[index].done; 
+    localStorage.setItem('items', JSON.stringify(items)); // localstorageに保存することでチェックの状態がリロードしても保存される
+    populateList(items, itemsList);
+  }
+
+  addItems.addEventListener('submit', addItem);
+  itemsList.addEventListener('click', toggleDone);
+  
+  populateList(items, itemsList); // リロードしたときにLOcalStorageに記憶されているモノがあったらitemsから取得してHTMLに追加する
+  // ↑これを先に記述しないとcheckBoxesで追加したHTMLのinput要素が選択されないので注意
+  // const checkBoxes = document.querySelectorAll('input');
+  // checkBoxes.forEach(input => input.addEventListener('click', () => alert('hi')));
+  // だけど上記の記述だと後からitemが追加されたときにcheckBoxesの定義が変わって機能しなくなっちゃうから、
+  // 新しい関数toggleDoneを作ってinput取得じゃなく全体を指すplatesクラス取得で実装する
+  
 
 </script>
 
 
 </body>
 </html>
-
