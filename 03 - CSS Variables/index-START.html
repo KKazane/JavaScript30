@@ -5,7 +5,7 @@
   <title>Scoped CSS Variables and JS</title>
 </head>
 <body>
-  <h2>Update CSS Variables with <span class='hl'>JS</span></h2>
+  <h2>Update CSS Variables with <span class="h1">JS</span></h2>
 
   <div class="controls">
     <label for="spacing">Spacing:</label>
@@ -21,7 +21,24 @@
   <img src="https://source.unsplash.com/7bwQXzbF6KE/800x500">
 
   <style>
+/* :root は<html>要素を表す */
+/* --baseなどの--はCSS変数を宣言している。:root内での--変数宣言はグローバル変数宣言に便利 */
+    :root {  
+      --base: yellow;
+      --spacing: 10px;
+      --blur: 10px;
+    }
 
+    img {
+      padding: var(--spacing);
+      background: var(--base);
+      filter: blur(var(--blur));
+    }
+
+    .h1 {
+      color: var(--base);
+
+    }
     /*
       misc styles, nothing to do with CSS variables
     */
@@ -45,6 +62,20 @@
   </style>
 
   <script>
+    const inputs = document.querySelectorAll(".controls input");
+    console.log(inputs);
+
+    function handleUpdate() {
+      // console.log(this.value);
+      const suffix = this.dataset.sizing || ""; // size名
+      // console.log(this.dataset);
+      // console.log(this.name);
+      document.documentElement.style.setProperty(`--${this.name}`, this.value + suffix);
+      
+    }
+
+    inputs.forEach(input => input.addEventListener("change", handleUpdate));
+    inputs.forEach(input => input.addEventListener("mousemove", handleUpdate));
   </script>
 
 </body>
