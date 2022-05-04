@@ -58,6 +58,29 @@
       };
     }
 
+    const sliderImages = document.querySelectorAll('.slide-in');
+
+    function checkSlide(e) {
+      // console.count(e);
+      // console.log(window.scrollY);
+      sliderImages.forEach(slideImage => {
+        // half way through the image
+        const slideInAt = (window.scrollY + window.innerHeight) - slideImage.height / 2; // イメージ画像挿入予定スペースが画面に半分表れたら画像挿入する
+        // console.log(slideInAt);
+        // bottom of the image
+        const imageBottom = slideImage.offsetTop + slideImage.height;
+        const isHalfShown = slideInAt > slideImage.offsetTop;
+        const isNotScrolledPast = window.scrollY < imageBottom;
+        if(isHalfShown && isNotScrolledPast) {
+          slideImage.classList.add('active');
+        } else {
+          slideImage.classList.remove('active');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', debounce(checkSlide));
+
   </script>
 
   <style>
