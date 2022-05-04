@@ -37,28 +37,121 @@
     
     // Array.prototype.filter()
     // 1. Filter the list of inventors for those who were born in the 1500's
-
+        const fifteen = inventors.filter(object => object.year >= 1500 && object.year < 1600 );
+        console.table(fifteen);
+        /* 先生の回答↓
+           const fifteen = inventors.filter(function(inventor) {
+          if(inventor.year >= 1500 && inventor.year < 1600) {
+            return true; // keep it!
+          }
+        })
+        console.table(fifteen);
+        */
     // Array.prototype.map()
     // 2. Give us an array of the inventors first and last names
+        const fullNames = inventors.map(object => object.first + " " + object.last);
+        console.log(fullNames);
 
     // Array.prototype.sort()
     // 3. Sort the inventors by birthdate, oldest to youngest
-
+        // 先生の回答↓
+        // const ordered = inventors.sort(function(a, b) {
+        //   if(a.year > b.year) {
+        //     return 1;
+        //   } else {
+        //     return -1;
+        //   }
+        // }); 
+        // 三項演算子を使って短くした場合…
+        const ordered = inventors.sort((a, b) => a.year > b.year ? 1 : -1);
+        // functionが与えられなかった場合、文字列がUTF-16コード単位順でソートされる。
+        // function(a, b)が0未満の場合、aが先に来るようにする。0より大きい場合、bが先に来るようにする。
+        // だからこの場合、(a.year > b.year)は年代が小さい方が古い人だから、年代の数がaが大きい場合はbが先に並ぶようにしている
+        console.table(ordered);
+        
     // Array.prototype.reduce()
     // 4. How many years did all the inventors live all together?
+        // 先生
+        // let totalYears = 0;
 
+        // for(let i = 0; i < inventors.length; i++) {
+        //   totalYears += inventors[i].year;
+        // } これはクレイジー
+
+        // console.log(totalYears);
+        const totalYears = inventors.reduce((total, inventor) => {
+          return total + (inventor.passed - inventor.year);
+        }, 0)
+        // .reduce((previousValue, currentValue) => {...}, initialValue)でpreviousValueは前回のコールバック関数の呼び出し結果の値(初回の呼び出しではinitialValueが指定されている場合はその値、ちがう場合はarray[0]の値)。currentValueは現在の要素
+        console.log(totalYears);
     // 5. Sort the inventors by years lived
+      const inventersSort = inventors.sort(function(a, b) {
+        if (a.passed - a.year > b.passed - b.year) {
+          return -1;
+        } else if (a.passed - a.year < b.passed - b.year) {
+          return 1;
+        }
+      });
+      console.log(inventersSort);
+      // 先生の回答↓
+      const oldest = inventors.sort(function(a, b) {
+        const lastGuy = a.passed - a.year;
+        const nextGuy = b.passed - b.year;
+        return lastGuy > nextGuy ? -1 : 1;
+        // if(lastGuy > nextGuy) {
+        //   return -1;
+        // } else {
+        //   return 1;
+        // }
+      });
+
+      console.table(oldest);
 
     // 6. create a list of Boulevards in Paris that contain 'de' anywhere in the name
     // https://en.wikipedia.org/wiki/Category:Boulevards_in_Paris
-
-
+      // ぺージからDOM要素を取得する ディベロッパーツールで
+      // const category = document.querySelector(".mw-category");
+      // category;
+      // const links = category.querySelectorAll("a"); リンクに飛ぶ要素として名前があるから
+      // これじゃないconst name = link.querySelectorAll("innerText")
+      // const de = links.map(link => link.textContent); ←このままだと機能しない。mapはarrayにしかきかなくて、linksはnodelistだから
+      // linksをarrayにする　const links = Array.from(category.querySelectorAll("a"));
+      // 今のdeじゃ全部の名前が選択されてるから…
+      /*
+      const category = document.querySelector(".mw-category");
+      const links = Array.from(category.querySelectorAll("a"));
+      const de = links
+                  .map(link => link.textContent)
+                  .filter(streetName => streetName.includes("de"));
+      */
     // 7. sort Exercise
     // Sort the people alphabetically by last name
+        const alpha = people.sort(function(lastOne, nextOne) {
+          // const parts = lastOne.split(", "); // .split()で指定した区切り文字列で分割して文字列の配列に分割する
+          // console.log(parts);
+          const [aLast, aFirst] = lastOne.split(", ");
+          const [bLast, bFirst] = lastOne.split(", ");
+          return aLast > bLast ? 1 : -1;
+        });
+        console.log(alpha);
 
     // 8. Reduce Exercise
     // Sum up the instances of each of these
-    const data = ['car', 'car', 'truck', 'truck', 'bike', 'walk', 'car', 'van', 'bike', 'walk', 'car', 'van', 'car', 'truck' ];
+    const data = ['car', 'car', 'truck', 'truck', 'bike', 'walk', 'car', 'van', 'bike', 'walk', 'car', 'van', 'car', 'truck'];
+      
+    const transportation = data.reduce(function(obj, item) { 
+      if(!obj[item]) {
+        obj[item] = 0;
+      }
+      obj[item]++;
+      return obj;
+    }, {
+      // car: 0, // 0の場合はブランク(空白)でok {}
+      // walk: 0,　// 初期値を変える場合は要記述
+      // truck: 0
+    })
+    console.log(transportation);
+    // 上記の場合、callbackFnのpreviousValueは前回の呼び出しの結果だからdataのarray?
 
   </script>
 </body>
