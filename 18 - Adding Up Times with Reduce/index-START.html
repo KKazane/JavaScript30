@@ -8,6 +8,7 @@
   <ul class="videos">
     <li data-time="5:43">
       Video 1
+      <!-- data-time で時間を入れるかもしくは、spanタグで<span class="time">5:43</span>で入れる -->
     </li>
     <li data-time="2:33">
       Video 2
@@ -182,6 +183,32 @@
     </li>
   </ul>
 <script>
+  // const timeNodes = document.querySelectorAll('[data-time]');
+  // console.log(timeNodes);
+  // const seconds = timeNodes.map(node => node.dataset.time); // ←これだとtimeNodesは配列でなくノードリストなのでmapがエラーになる
+
+  const timeNodes = Array.from(document.querySelectorAll('[data-time]')); // もしくは[...document.querySelectorAll('[data-time]')]で配列にする
+  const seconds = timeNodes
+                  .map(node => node.dataset.time)
+                  .map(timeCode => {
+                    const [mins, secs] = timeCode.split(':').map(parseFloat); // 時間の分と秒をわけ、文字列から数字を返す.map(parseFroat)もしくは.map((str)=>parseFloat(str))
+                    return (mins * 60) + secs;
+                    console.log(mins, secs);
+                  })
+                  .reduce((total, vidSeconds) => total + vidSeconds); // 全ての時間を合計した値を出す
+
+  let secondsLeft = seconds;
+  const hours = Math.floor(secondsLeft / 3600); // 60sec*60minで1hourだから
+  secondsLeft = secondsLeft % 3600;
+  // console.log(secondsLeft);
+  const mins = Math.floor(secondsLeft / 60);
+  secondsLeft = secondsLeft % 60;
+
+  console.log(hours, mins, secondsLeft);
+
+
+
+
 </script>
 </body>
 </html>
