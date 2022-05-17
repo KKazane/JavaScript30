@@ -59,6 +59,19 @@
     /*Compass: https://thenounproject.com/search/?q=compass&i=592352*/
   </style>
   <script>
+    const arrow = document.querySelector('.arrow');
+    const speed = document.querySelector('.speed-value');
+
+    // ユーザーの位置を知る
+    // navigator.geolocation.getCurrentPosition()は一個だけ、watchPositionは必要なだけデータを取得する
+    navigator.geolocation.watchPosition((data) => {
+      console.log(data);
+      speed.textContent = data.coords.speed; // Math.round()でかこって整数にしてもいい
+      arrow.style.transform = `rotate(${data.coords.heading}deg)`;
+    }, (err) => {
+      console.error(err);
+      alert('HEY! YOU GOTTA ALLOW THAT TO HAPPEN!!!');
+    });
   </script>
 </body>
 </html>
