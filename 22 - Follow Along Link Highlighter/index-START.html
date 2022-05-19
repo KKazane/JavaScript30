@@ -10,7 +10,7 @@
     <nav>
       <ul class="menu">
         <li><a href="">Home</a></li>
-        <li><a href="">Order Status</a></li>
+        <li><a href="">Order<br>Status</a></li>
         <li><a href="">Tweets</a></li>
         <li><a href="">Read Our History</a></li>
         <li><a href="">Contact Us</a></li>
@@ -26,7 +26,39 @@
     </div>
 
   <script>
+    // <body>のliタグ内テキストで、<br>を入れると二行になる。Order<br>Statusとか。
     // 👀👀👀👀👀👀👀👀👀👀👀👀👀👀👀
+    const triggers = document.querySelectorAll('a');
+    // spanタグを付けてハイライトをcssに付与する
+    const highlight = document.createElement('span');
+    highlight.classList.add('highlight');
+    document.body.append(highlight);
+
+    function highlightLink() {
+      // console.log('Highlight!');
+      // console.log(this);
+      // 要素の寸法と位置を取得するElement.getBoundingClientRect()
+      const linkCoords = this.getBoundingClientRect();
+      console.log(linkCoords);
+      const coords = {
+        width: linkCoords.width,
+        height: linkCoords.height,
+        top: linkCoords.top + window.scrollY,
+        left: linkCoords.left + window.scrollX
+      }
+      // highlight.style.width = `${linkCoords.width}px`;
+      // highlight.style.height = `${linkCoords.height}px`;
+      // // 左から右、上から下などにhighlightがアニメートするようにする
+      // highlight.style.transform = `translate(${linkCoords.left}px, ${linkCoords.top}px)`;
+      // 上記だとハイライトの位置が少しずれるので、window.scrollYやXで先頭の位置を調節する offset
+      highlight.style.width = `${coords.width}px`;
+      highlight.style.height = `${coords.height}px`;
+      // 左から右、上から下などにhighlightがアニメートするようにする
+      highlight.style.transform = `translate(${coords.left}px, ${coords.top}px)`;
+    }
+
+    triggers.forEach(a => a.addEventListener('mouseenter', highlightLink));
+
   </script>
 </body>
 </html>
