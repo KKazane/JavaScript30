@@ -54,6 +54,23 @@
   </div>
 
 <script>
+  const nav = document.querySelector('#main');
+  const topOfNav = nav.offsetTop; // HTMLElement.offsetTopは現在の要素の外枠から最も近い位置にあるoffsetParentの上枠の内側までの距離
+
+
+
+  function fixNav() {
+    console.log(topOfNav, window.scrollY);
+    if(window.scrollY >= topOfNav) {
+      document.body.style.paddingTop = nav.offsetHeight + 'px';
+      document.body.classList.add('fixed-nav'); // この一行だけだとぎくしゃくした動きになるから、この前にpaddingを変更する
+    } else {
+      document.body.style.paddingTop = 0;
+      document.body.classList.remove('fixed-nav');
+    }
+  }
+
+  window.addEventListener('scroll', fixNav);
 
 </script>
 
