@@ -29,12 +29,56 @@
     </div>
 
 <script>
-  const msg = new SpeechSynthesisUtterance();
+  const msg = new SpeechSynthesisUtterance(); // Web Speech API
   let voices = [];
   const voicesDropdown = document.querySelector('[name="voice"]');
   const options = document.querySelectorAll('[type="range"], [name="text"]');
   const speakButton = document.querySelector('#speak');
   const stopButton = document.querySelector('#stop');
+  msg.text = document.querySelector('[name="text"]').value;
+  // developperToolでコンソールにspeechSynthesisと入力して確認
+  // SpeechSynthesis {pending: false, speaking: false, paused: false, onvoiceschanged: null}
+  // speechSynthesis.speak(msg)とコンソール入力しても機能しない(undefined)。ボイスがないから。だから設定する
+  function populateVoices() {
+    voices = this.getVoices();
+    console.log(voices);
+    voicesDropdown.innerHTML = voices
+                          .filter(voice => voice.lang.includes('ja'))
+                          .map(voice => `<option value="${voice.name}">${voice.name} (${voice.lang})</option>`)
+                          .join('');
+    // .filterしなければ全部の言語選択肢が表示される。
+    // 英語だけにするならば.filter(voice => voice.lang.includes('en'))
+  }
+
+  function setVoice() {
+    console.log(this.value);
+    msg.voice = voices.find(voice => voice.name === this.value); // Array.find()はテスト関数を満たす配列内の最初の要素を返す
+    toggle(); // 別のvoiceに変えたとき、前のvoiceを止めて別のvoiceを再生する
+  }
+
+  function toggle(startOver = true) {
+    speechSynthesis.cancel();
+    if(startOver) {
+      speechSynthesis.speak(msg);
+    }
+   // toggle(false)と呼び出した時には音声キャンセルだけして、toggle()としたときはキャンセル＆再生
+  }
+
+  function setOption() {
+    console.log(this.name, this.value);
+    msg[this.name] = this.value; // 書き換える
+    toggle(); // 停止して、pitchやrateの値を書き換えたvoiceで再生する
+  }
+
+  speechSynthesis.addEventListener('voiceschanged', populateVoices);
+  voicesDropdown.addEventListener('change', setVoice);
+  options.forEach(option => option.addEventListener('change', setOption));
+  speakButton.addEventListener('click', toggle);
+  stopButton.addEventListener('click', function() {
+    toggle(false);
+  }); // もしくはtoggle.bind(null, false)もしくは()=>toggle(false)
+  // toggle(false)だけだと、関数toggleは関数を返さないので機能しない
+
 </script>
 
 </body>
