@@ -42,7 +42,33 @@
 
 <button></button>
 <script>
+  // events Bubbling その要素を含む上位要素の同じイベントも実行してしまうことをbubble upするという
+  // バブリングフェーズはイベントが要素から上にバブルする、キャプチャリングフェーズはイベントが要素へ下りていく。
+  // captureがfalse(デフォルト)の場合、ハンドラはバブリングフェーズで設定。trueの場合、ハンドラはキャプチャリングフェーズで設定
+  const divs  = document.querySelectorAll('div');
+  const button = document.querySelector('button');
 
+  function logText(e) {
+    console.log(this.classList.value);
+    console.log(this);
+    // e.stopPropagation(); // event.stopPropagation()は、上に移動するの(バブリング)を止める。現在の要素上にある他のすべてのハンドラは実行する
+  } 
+
+  // document.body.addEventListener('click', logText);
+
+  divs.forEach(div => div.addEventListener('click', logText, {
+    capture: false,
+    once: true
+  })); // キャプチャリングフェーズでイベントをキャッチするにはaddEventListenerの三つ目の引数をtrueにする必要あり
+  // stopPropagation()とcapture:trueにすると、どこクリックしてもone。下りる途中で一つ実行し、stopPropagationで停止するから
+  // stopPropagation()とcapture:falseだと、クリックした要素だけ(threeだけ、twoだけなど)
+  // once:trueは、div.removeEventListener('click', logText)と同じ。一度クリックすると、二回目は実行できない
+
+  button.addEventListener('click', () => {
+    console.log('Click!!!!');
+  }, {
+    once: true
+  });
 </script>
 </body>
 </html>
