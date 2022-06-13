@@ -220,6 +220,53 @@
 </style>
 
 <script>
+  const triggers = document.querySelectorAll('.cool > li');
+  const background = document.querySelector('.dropdownBackground');
+  const nav = document.querySelector('.top');
+
+  function handleEnter() {
+    // console.log('ENTER!');
+    this.classList.add('trigger-enter');
+    setTimeout(() => {
+      console.log(this); // 関数setTimeoutでは、thisが期待とは異なる値で起動されることがある。呼び出しあるいはbindでthisを設定しなければglobalまたはwindowになる。
+      // 解決策としては、これのように引数の関数をアロー関数にするか、ラッパー関数を使用する。
+      if(this.classList.contains('trigger-enter')) {
+        this.classList.add('trigger-enter-active');
+      }
+    }, 150);
+    /* 短く書くと以下
+    setTimeout(() => this.classList.contains('trigger-enter') && this.classList.add('trigger-enter-active'), 150);
+    */
+    background.classList.add('open');
+
+    const dropdown = this.querySelector('.dropdown');
+    // console.log(dropdown);
+    const dropdownCoords = dropdown.getBoundingClientRect(); // Element.getBoundingClinentRect()メソッドは、要素の寸法とビューボードに対する相対位置に関する情報を返す
+    // console.log(dropdownCoords);
+    const navCoords = nav.getBoundingClientRect();
+    // console.log(navCoords);
+    const coords = {
+      height: dropdownCoords.height,
+      width: dropdownCoords.width,
+      top: dropdownCoords.top - navCoords.top,
+      left: dropdownCoords.left - navCoords.left
+    };
+
+    console.log(dropdownCoords.top, navCoords.top);
+
+    background.style.setProperty('width', `${coords.width}px`); // style.setProperty(PropertyName, value)でPropertyNameに新しい値を設定できる
+    background.style.setProperty('height', `${coords.height}px`);
+    background.style.setProperty('transform', `translate(${coords.left}px, ${coords.top}px)`) // 変換ベクトルの横軸と縦軸を表す
+  }
+
+  function handleLeave() {
+    // console.log('LEAVE!');
+    this.classList.remove('trigger-enter', 'trigger-enter-active');
+    background.classList.remove('open');
+  }
+  
+  triggers.forEach(trigger => trigger.addEventListener('mouseenter', handleEnter));
+  triggers.forEach(trigger => trigger.addEventListener('mouseleave', handleLeave));
 </script>
 
 </body>
