@@ -35,6 +35,46 @@
   </div>
 
 <script>
+  const slider = document.querySelector('.items');
+  let isDown = false; // clickしてるかどうかの指標にする
+  let startX;
+  let scrollLeft;
+
+  slider.addEventListener('mousedown', (e) => {
+    isDown = true;
+    slider.classList.add('active');
+    // console.log(e.pageX);
+    startX = e.pageX - slider.offsetLeft;
+    scrollLeft = slider.scrollLeft;
+    console.log(startX);
+  });
+
+  slider.addEventListener('mouseleave', () => {
+    isDown = false;
+    slider.classList.remove('active');
+  });
+
+  slider.addEventListener('mouseup', () => {
+    isDown = false;
+    slider.classList.remove('active');
+  });
+
+  slider.addEventListener('mousemove', (e) => {
+    if(!isDown) return; // click状態でしかコンソール表示(以下の動作)をしない
+    // console.count(isDown);
+    // console.log('Do work!');
+    // console.log(startX);
+    e.preventDefault(); // デフォルト(ここではテキスト選択)の動作をキャンセルする
+    const x = e.pageX - slider.offsetLeft; // startXをmousedownで定義したのと同じ式だが、xはmousemoveで変化する
+    console.log({x, startX}); // objectで表示
+    // const walk = x - startX; // もっと早く移動させるには…
+    const walk = (x - startX) * 3;
+    // console.log(`walk: ${walk}`);
+    // slider.scrollLeft = walk; // これだと動作ががたがたする。都度再計算するから
+    slider.scrollLeft = scrollLeft - walk;
+  });
+
+
 </script>
 
   </body>
